@@ -10,14 +10,14 @@ import 'package:flutter_steps_tracker/features/bottom_navbar/presentation/manage
 import 'package:flutter_steps_tracker/generated/l10n.dart';
 import 'package:flutter_steps_tracker/utilities/constants/enums.dart';
 import 'package:injectable/injectable.dart';
-import 'package:pedometer/pedometer.dart';
+// import 'package:pedometer/pedometer.dart'; // Temporarily disabled
 
 @injectable
 class HomeCubit extends Cubit<HomeState> {
   final SetExchangeHistoryUseCase _setExchangeHistoryUseCase;
   final SetStepsAndPointsUseCase _setStepsAndPointsUseCase;
   final GetUserDataUseCase _getUserDataUseCase;
-  late Stream<StepCount> _stepCountStream;
+  // late Stream<StepCount> _stepCountStream; // Temporarily disabled
   String _steps = '?';
 
   HomeCubit(
@@ -50,11 +50,16 @@ class HomeCubit extends Cubit<HomeState> {
 
   void initPlatformState() {
     emit(const HomeState.loading());
-    _stepCountStream = Pedometer.stepCountStream;
-    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+    // Temporarily disabled pedometer functionality
+    // _stepCountStream = Pedometer.stepCountStream;
+    // _stepCountStream.listen(onStepCount).onError(onStepCountError);
+    _steps = '0'; // Mock data
+    emit(HomeState.loaded(steps: _steps));
   }
 
-  void onStepCount(StepCount event) async {
+  void onStepCount(dynamic event) async {
+    // Temporarily disabled
+    /*
     debugPrint(event.toString());
     var oldSteps = int.tryParse(_steps) ?? 0;
     _steps = event.steps.toString();
@@ -62,6 +67,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeState.loaded(steps: _steps));
     await _setStepsAndPointsUseCase(event.steps);
     await onFeedbackState(oldSteps, event.steps);
+    */
   }
 
   Future<void> onFeedbackState(int oldSteps, int newSteps) async {

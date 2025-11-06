@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart'; // Firebase disabled
 import 'package:flutter/material.dart';
 import 'package:flutter_steps_tracker/core/presentation/widgets/show_alert_dialog.dart';
 
@@ -15,8 +15,6 @@ Future<void> showExceptionAlertDialog(
     );
 
 String _message(Exception exception) {
-  if (exception is FirebaseException) {
-    return exception.message!;
-  }
+  // Firebase disabled - just return exception string
   return exception.toString();
 }

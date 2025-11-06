@@ -1,5 +1,5 @@
 import 'package:flutter_steps_tracker/core/data/models/user_model.dart';
-import 'package:flutter_steps_tracker/features/bottom_navbar/domain/entities/leaderboard_item_entity.dart';
+// import 'package:flutter_steps_tracker/features/bottom_navbar/domain/entities/leaderboard_item_entity.dart'; // Unused
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'leaderboard_state.freezed.dart';

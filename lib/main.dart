@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart'; // Disabled - Firebase not in use
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,7 +21,13 @@ Future<void> main() async {
 
 Future<void> _initialize() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // Firebase disabled - not currently in use
+  // try {
+  //   await Firebase.initializeApp();
+  // } catch (e) {
+  //   print('Firebase initialization failed: $e');
+  //   print('The app will run without Firebase features.');
+  // }
   await configure();
 }
 

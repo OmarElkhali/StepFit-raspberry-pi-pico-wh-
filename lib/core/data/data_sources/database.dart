@@ -91,10 +91,7 @@ class FireStoreDatabase implements Database {
         path: APIPath.dailyStepsAndPointsStream(uid),
         builder: (data, documentId) =>
             StepsAndPointsModel.fromMap(data, documentId),
-        queryBuilder: (query) => query.where(
-          'id',
-          isNotEqualTo: currentId,
-        ),
+        queryBuilder: (query) => query, // Simplified since Firebase is disabled
       );
 
   @override

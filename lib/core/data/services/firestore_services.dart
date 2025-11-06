@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Firebase disabled - this service is not currently in use
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class FirestoreService {
@@ -9,43 +10,29 @@ class FirestoreService {
   Stream<List<T>> collectionStream<T>(
       {required String path,
       required T Function(Map<String, dynamic> data, String documentId) builder,
-      Query Function(Query query)? queryBuilder,
+      dynamic Function(dynamic query)? queryBuilder,
       int Function(T lhs, T rhs)? sort}) {
-    Query query = FirebaseFirestore.instance.collection(path);
-    if (queryBuilder != null) query = queryBuilder(query);
-    final Stream<QuerySnapshot> snapshots = query.snapshots();
-    return snapshots.map((snapshot) {
-      final result = snapshot.docs
-          .map(
-            (snapshot) => builder(snapshot.data() as Map<String, dynamic>, snapshot.id),
-          )
-          .where((value) => value != null)
-          .toList();
-      if (sort != null) result.sort(sort);
-
-      return result;
-    });
+    // Firebase disabled - returning empty stream
+    debugPrint('FirestoreService disabled: collectionStream called for $path');
+    return Stream.value([]);
   }
 
   Future<void> deleteData({required String path}) async {
-    final reference = FirebaseFirestore.instance.doc(path);
-    debugPrint('delete: $path');
-    await reference.delete();
+    debugPrint('FirestoreService disabled: delete called for $path');
   }
 
   Future<void> setData(
       {required String path, required Map<String, dynamic> data}) async {
-    final reference = FirebaseFirestore.instance.doc(path);
-    debugPrint('$path:$data');
-    await reference.set(data);
+    debugPrint(
+        'FirestoreService disabled: setData called for $path with data: $data');
   }
 
   Stream<T> documentStream<T>(
       {required String path,
-      required T Function(Map<String, dynamic> data, String documentId) builder}) {
-    final DocumentReference reference = FirebaseFirestore.instance.doc(path);
-    final Stream<DocumentSnapshot> snapshots = reference.snapshots();
-    return snapshots
-        .map((snapshot) => builder(snapshot.data() as Map<String, dynamic>, snapshot.id));
+      required T Function(Map<String, dynamic> data, String documentId)
+          builder}) {
+    // Firebase disabled - returning stream with default/empty data
+    debugPrint('FirestoreService disabled: documentStream called for $path');
+    return Stream.value(builder({}, ''));
   }
 }

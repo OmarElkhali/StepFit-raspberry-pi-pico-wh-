@@ -5,41 +5,65 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.3 <3.0.0"
+  sdk: ">=2.17.3 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
   flutter_localizations:
     sdk: flutter
-  pedometer: ^3.0.0
-  firebase_core: ^1.17.1
-  firebase_auth: ^3.3.19
-  cloud_firestore: ^3.1.17
-  get_it: ^7.2.0
-  injectable: ^1.5.3
-  freezed: ^2.0.3+1
-  freezed_annotation: ^2.0.3
+  cupertino_icons: ^1.0.2
+  
+  # State Management
   provider: ^6.0.3
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
-  shared_preferences: ^2.0.15
+  
+  # UI Components
   persistent_bottom_nav_bar_v2: ^4.2.3
   syncfusion_flutter_gauges: ^20.1.59
+  cached_network_image: ^3.2.0
+  
+  # Charts & Visualization
+  fl_chart: ^0.65.0
+  
+  # Storage
+  shared_preferences: ^2.0.15
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  
+  # Firebase - Temporarily disabled
+  # firebase_core: ^2.4.0
+  # firebase_auth: ^4.2.0
+  # cloud_firestore: ^4.3.0
+  
+  # Dependency Injection
+  get_it: ^7.2.0
+  injectable: ^2.1.0
+  
+  # Utilities
+  intl: ^0.18.1
   dartz: ^0.10.1
-  logging: ^1.0.2
-  intl: ^0.17.0
-  cached_network_image: ^3.2.1
-  cron: ^0.5.0
+  freezed_annotation: ^2.2.0
+  json_annotation: ^4.8.0
+  logging: ^1.1.1
+  # pedometer: ^3.0.0  # Temporarily disabled due to Kotlin compatibility issues
+  
+  # IoT & MQTT
+  mqtt_client: ^10.0.0
+  
+  # Database
+  sqflite: ^2.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  build_runner:
-  injectable_generator: ^1.5.3
-  change_app_package_name: ^1.1.0
+  build_runner: ^2.4.9
+  hive_generator: ^2.0.1
+  injectable_generator: ^2.1.4
+  freezed: ^2.3.2
+  json_serializable: ^6.6.1
 
 flutter_intl:
   enabled: true
