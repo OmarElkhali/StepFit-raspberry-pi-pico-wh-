@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_steps_tracker/features/bottom_navbar/presentation/pages/bottom_navbar.dart';
-import 'package:flutter_steps_tracker/features/intro/presentation/manager/auth_status/auth_status_cubit.dart';
-import 'package:flutter_steps_tracker/features/intro/presentation/manager/auth_status/auth_status_state.dart';
-import 'package:flutter_steps_tracker/features/intro/presentation/pages/intro_page.dart';
+import 'package:flutter_steps_tracker/core/data/services/user_preferences_service.dart';
+import 'package:flutter_steps_tracker/features/iot/presentation/pages/main_dashboard_page.dart';
+import 'package:flutter_steps_tracker/features/intro/presentation/pages/onboarding_form_page.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthStatusCubit, AuthStatusState>(
-      bloc: BlocProvider.of<AuthStatusCubit>(context),
-      listener: (context, state) {
-        if (state is Authenticated) {
-          const BottomNavbar();
-        } else {
-          const IntroPage();
+    return FutureBuilder<bool>(
+      future: UserPreferencesService.hasCompletedOnboarding(),
+      builder: (context, snapshot) {
+        // En attendant la réponse, afficher un écran de chargement
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
-      },
-      buildWhen: (previousState, currentState) => previousState != currentState,
-      builder: (context, state) {
-        return state.maybeWhen(
-          authenticated: () => const BottomNavbar(),
-          unAuthenticated: () => const IntroPage(),
-          orElse: () => const SizedBox.shrink(),
-        );
+
+        // Si l'utilisateur a complété l'onboarding, aller à l'accueil
+        // Sinon, afficher le formulaire d'onboarding
+        final hasCompletedOnboarding = snapshot.data ?? false;
+
+        if (hasCompletedOnboarding) {
+          return const MainDashboardPage();
+        } else {
+          return const OnboardingFormPage();
+        }
       },
     );
   }

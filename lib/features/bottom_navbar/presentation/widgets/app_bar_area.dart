@@ -1,8 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_steps_tracker/generated/l10n.dart';
-import 'package:flutter_steps_tracker/utilities/constants/assets.dart';
 import 'package:flutter_steps_tracker/utilities/constants/key_constants.dart';
 import 'package:flutter_steps_tracker/utilities/locale/cubit/utility_cubit.dart';
 import 'package:provider/provider.dart';
@@ -22,16 +19,40 @@ class AppBarArea extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CachedNetworkImage(
-              imageUrl: AppAssets.logo,
-              fit: BoxFit.cover,
-              color: Theme.of(context).primaryColor,
-            ),
-            Text(
-              S.of(context).pedometer,
-              style: Theme.of(context).textTheme.headline6!.copyWith(
-                    color: Theme.of(context).primaryColor,
+            Row(
+              children: [
+                // Logo du coureur
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Image.asset(
+                      'assets/images/runner_logo.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.directions_run,
+                          color: Colors.white,
+                          size: 20,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Tracker',
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
             ),
             Row(
               children: [

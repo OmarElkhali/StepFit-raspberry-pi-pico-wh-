@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_steps_tracker/features/bottom_navbar/presentation/pages/exchanges_page.dart';
-import 'package:flutter_steps_tracker/features/bottom_navbar/presentation/pages/home_page.dart';
-import 'package:flutter_steps_tracker/features/bottom_navbar/presentation/pages/leaderboard_page.dart';
-import 'package:flutter_steps_tracker/features/bottom_navbar/presentation/pages/rewards_page.dart';
+import 'package:flutter_steps_tracker/features/iot/presentation/pages/main_dashboard_page.dart';
+import 'package:flutter_steps_tracker/features/iot/presentation/pages/history_page.dart';
+import 'package:flutter_steps_tracker/features/iot/presentation/pages/bmi_calculator_page.dart';
+import 'package:flutter_steps_tracker/features/iot/presentation/pages/profile_page.dart';
 import 'package:flutter_steps_tracker/features/bottom_navbar/presentation/widgets/app_bar_area.dart';
-import 'package:flutter_steps_tracker/generated/l10n.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:flutter_steps_tracker/generated/l10n.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({Key? key}) : super(key: key);
@@ -20,10 +20,10 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   List<Widget> _buildScreens() {
     return [
-      const HomePage(),
-      const ExchangesHistoryPage(),
-      const RewardsPage(),
-      const LeaderboardPage(),
+      const MainDashboardPage(), // Page d'accueil Bluetooth
+      const BMICalculatorPage(), // Page IMC/Calories
+      const HistoryPage(), // Historique
+      const ProfilePage(), // Profil utilisateur
     ];
   }
 
@@ -31,25 +31,25 @@ class _BottomNavbarState extends State<BottomNavbar> {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.home),
-        title: (S.current.home),
+        title: S.of(context).home,
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.track_changes),
-        title: (S.current.exchanges),
+        icon: const Icon(Icons.monitor_weight), // Icône BMI
+        title: S.of(context).imcAndCalories,
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.card_giftcard),
-        title: (S.current.rewards),
+        icon: const Icon(Icons.history), // Icône historique
+        title: S.of(context).history,
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.developer_board),
-        title: (S.current.leaderboard),
+        icon: const Icon(Icons.person), // Icône profil
+        title: S.of(context).myProfile,
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),

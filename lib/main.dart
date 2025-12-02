@@ -10,6 +10,7 @@ import 'package:flutter_steps_tracker/utilities/locale/cubit/utility_state.dart'
 import 'package:flutter_steps_tracker/utilities/locale/theme_data.dart';
 import 'package:flutter_steps_tracker/utilities/routes/router.dart';
 import 'package:flutter_steps_tracker/utilities/routes/routes.dart';
+import 'package:flutter_steps_tracker/core/data/services/notification_service.dart';
 
 // TODO: It's not good to do many workarounds as I did in this project
 // but I had to do that because currently, I don't have server-side service
@@ -29,6 +30,9 @@ Future<void> _initialize() async {
   //   print('The app will run without Firebase features.');
   // }
   await configure();
+
+  // Initialize notification service
+  await NotificationService().initialize();
 }
 
 class MyApp extends StatelessWidget {
@@ -68,7 +72,7 @@ class MyApp extends StatelessWidget {
             builder: (context, state) {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
-                title: 'Flutter Steps Tracker',
+                title: 'StepFit Pro - Suivi d\'Activité',
                 theme: MainTheme.lightTheme(context),
                 supportedLocales: S.delegate.supportedLocales,
                 localizationsDelegates: const [
@@ -81,7 +85,7 @@ class MyApp extends StatelessWidget {
                 themeMode: utility.currentTheme(),
                 darkTheme: MainTheme.darkTheme(context),
                 onGenerateRoute: onGenerate,
-                initialRoute: AppRoutes.landingPageRoute,
+                initialRoute: AppRoutes.splashRoute,
               );
             },
           );
