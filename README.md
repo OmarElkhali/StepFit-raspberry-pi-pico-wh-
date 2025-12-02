@@ -529,7 +529,6 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 - La communauté MicroPython pour l'excellent support
 - Flutter Team pour le framework multiplateforme
 - Les chercheurs cités pour leurs travaux fondamentaux
-- Projet original basé sur [Flutter-Steps-Tracker](https://github.com/TarekAlabd/Flutter-Steps-Tracker) par TarekAlabd
 
 ---
 

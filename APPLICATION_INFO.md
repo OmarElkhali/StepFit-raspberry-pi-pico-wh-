@@ -290,7 +290,7 @@ Tables:
 
 ### Contact
 - **Email**: support@stepfitpro.com
-- **GitHub**: [Flutter-Steps-Tracker](https://github.com/TarekAlabd/Flutter-Steps-Tracker)
+- **GitHub**: [StepFit-raspberry-pi-pico-wh-](https://github.com/OmarElkhali/StepFit-raspberry-pi-pico-wh-)
 - **Documentation**: Voir fichiers `/docs`
 
 ### Ressources
