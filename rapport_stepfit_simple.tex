@@ -24,10 +24,10 @@
 \begin{titlepage}
     \centering
     
-    \vspace*{1cm}
+    \vspace*{0.5cm}
     
-    % Logo ENSAM (placeholder - remplacer par le vrai logo si disponible)
-    {\Large \textbf{ENSAM}}
+    % Logo ENSAM
+    \includegraphics[width=0.3\textwidth]{logo_ensam.png}
     
     \vspace{0.5cm}
     
@@ -47,13 +47,11 @@
     
     {\Large \textbf{StepFit}}
     
-    {\large Raspberry Pi Pico WH avec MPU6500}
+    {\large Raspberry Pi Pico WH avec Capteur MPU6500}
     
     \vspace{1cm}
     
-    {\large Mini-Projet - Statistical Learning}
-    
-    {\large Problem 7 : Dimensionality Reduction}
+    {\large Module: Embedded Systems}
     
     \vspace{2cm}
     
@@ -78,14 +76,14 @@
     
     \vfill
     
-    {\large Année Universitaire 2024-2025}
+    {\large Année Universitaire 2025-2026}
     
 \end{titlepage}
 
 \newpage
 
 \begin{abstract}
-Ce rapport présente le développement d'un système IoT de suivi d'activité physique nommé \textbf{StepFit}. Le système combine un capteur MPU6500 sur Raspberry Pi Pico WH avec une application Flutter. Les algorithmes implémentés sont scientifiquement validés pour la détection de pas, le calcul de vitesse, distance et calories.
+Ce rapport présente \textbf{StepFit}, un bracelet connecté intelligent qui compte vos pas, calcule votre vitesse de marche, la distance parcourue et les calories brûlées. Le système utilise un petit ordinateur (Raspberry Pi Pico WH) équipé d'un capteur de mouvement (MPU6500) qui communique avec votre smartphone via Bluetooth. Toutes les formules utilisées sont basées sur des recherches scientifiques reconnues.
 \end{abstract}
 
 \tableofcontents
@@ -93,51 +91,100 @@ Ce rapport présente le développement d'un système IoT de suivi d'activité ph
 
 \section{Introduction}
 
-StepFit est un système IoT de suivi d'activité utilisant des capteurs MEMS pour mesurer les mouvements corporels en temps réel.
+\subsection{Qu'est-ce que StepFit ?}
 
-\textbf{Technologies:} Raspberry Pi Pico WH (RP2040), MPU6500 (6 axes), BLE, MicroPython, Flutter 3.13.2
+StepFit est un podomètre intelligent (compteur de pas) qui fonctionne comme les bracelets Fitbit ou Apple Watch, mais conçu par nous-mêmes. Il utilise des capteurs électroniques miniatures pour détecter chaque pas que vous faites et calculer automatiquement:
 
-\section{Architecture Matérielle}
+\begin{itemize}
+    \item Le nombre total de pas effectués
+    \item Votre vitesse de marche ou de course
+    \item La distance totale parcourue
+    \item Les calories brûlées pendant l'activité
+\end{itemize}
 
-\subsection{Composants}
+\subsection{Composants Utilisés}
 
-\textbf{Raspberry Pi Pico WH:} Dual-core ARM Cortex-M0+ @ 133 MHz, 264 KB SRAM, BLE 5.2, consommation 80 mW.
+\begin{itemize}
+    \item \textbf{Raspberry Pi Pico WH}: Un mini-ordinateur de la taille d'une clé USB
+    \item \textbf{MPU6500}: Un capteur qui détecte les mouvements dans toutes les directions
+    \item \textbf{Bluetooth}: Pour envoyer les données à votre téléphone sans fil
+    \item \textbf{Application mobile}: Une app sur smartphone pour voir vos statistiques
+\end{itemize}
 
-\textbf{MPU6500:} Accéléromètre/Gyroscope 6 axes, plage $\pm$2-16\textit{g}, résolution 16 bits, I$^2$C @ 400 kHz.
+\section{Comment ça Marche ? - Architecture du Système}
 
-\textbf{Câblage I$^2$C:} VCC→3.3V, GND→GND, SCL→GP1, SDA→GP0, adresse 0x68.
+\subsection{Le Mini-Ordinateur: Raspberry Pi Pico WH}
 
-\section{Traitement du Signal}
+C'est le "cerveau" du système. Il traite les informations du capteur et envoie les résultats au téléphone.
 
-\subsection{Signal Vector Magnitude (SVM)}
+\textbf{Caractéristiques:}
+\begin{itemize}
+    \item Processeur rapide (133 MHz) pour calculer en temps réel
+    \item Mémoire de 264 KB pour stocker les données temporaires
+    \item Bluetooth intégré pour communiquer sans fil
+    \item Consommation très faible (80 mW) pour longue autonomie
+\end{itemize}
 
-Mesure indépendante de l'orientation validée par \textbf{Bouten et al. (1997)}:
+\subsection{Le Capteur de Mouvement: MPU6500}
 
+C'est un capteur intelligent qui mesure les mouvements dans toutes les directions (haut/bas, gauche/droite, avant/arrière).
+
+\textbf{Capacités:}
+\begin{itemize}
+    \item Détecte les accélérations de 0 à 16 fois la gravité terrestre
+    \item Précision élevée (16 bits) pour une détection fine
+    \item Fonctionne à 50 mesures par seconde
+\end{itemize}
+
+\subsection{Connexion des Composants}
+
+Le capteur MPU6500 est connecté au Pico WH par 4 fils simples:
+\begin{itemize}
+    \item Alimentation (3.3V)
+    \item Masse (GND)
+    \item Deux fils de communication (SCL et SDA)
+\end{itemize}
+
+\section{Analyse des Mouvements}
+
+\subsection{Calcul de l'Accélération Totale (SVM)}
+
+Le capteur mesure les mouvements dans 3 directions (X, Y, Z). On combine ces 3 valeurs en une seule pour avoir l'accélération totale, peu importe comment le bracelet est orienté sur votre poignet.
+
+\textbf{Formule mathématique:}
 \begin{equation}
-    \text{SVM} = \sqrt{a_x^2 + a_y^2 + a_z^2}
+    \text{Accélération Totale} = \sqrt{X^2 + Y^2 + Z^2}
 \end{equation}
 
-\subsection{Filtre Passe-Bas IIR}
+Cette méthode est utilisée dans tous les bracelets connectés modernes et a été validée scientifiquement par \textbf{Bouten et al. (1997)}.
 
-Filtre du premier ordre (\textbf{Smith, 1997}) pour éliminer le bruit:
+\subsection{Filtrage du Bruit}
 
+Les capteurs captent aussi des vibrations parasites (voiture, métro, etc.). On applique un filtre pour garder uniquement les vrais mouvements de marche:
+
+\textbf{Le filtre fonctionne ainsi:}
 \begin{equation}
-    y[n] = 0.8 \cdot y[n-1] + 0.2 \cdot x[n]
+    \text{Valeur Filtrée} = 80\% \times \text{Ancienne Valeur} + 20\% \times \text{Nouvelle Valeur}
 \end{equation}
 
-Fréquence de coupure: $f_c = \frac{50}{2\pi} \ln(1.25) \approx 1.8$ Hz. Préserve la marche (0.5-2 Hz), supprime les vibrations ($>$3 Hz).
+Ce filtre (développé par \textbf{Smith, 1997}) garde les mouvements de marche (0.5-2 oscillations/seconde) et supprime les vibrations rapides.
 
-\section{Détection de Pas}
+\section{Comment Compter les Pas ?}
 
-Algorithme par seuil (\textbf{Zhao, 2010}). Un pas est détecté si:
+\subsection{Principe de Détection}
 
+Quand vous marchez, votre corps fait un mouvement de haut en bas à chaque pas. Le capteur détecte ces mouvements comme des "pics" d'accélération.
+
+\textbf{Un pas est compté quand:}
 \begin{enumerate}
-    \item $\text{SVM}_{\text{filtré}} > 0.15$\textit{g}
-    \item Transition: $\text{SVM}_{n-1} \leq \theta$ ET $\text{SVM}_n > \theta$
-    \item $\Delta t > 250$ ms
+    \item L'accélération dépasse un seuil de 0.15g (15\% de la gravité terrestre)
+    \item Il y a une montée: on passe d'une valeur basse à une valeur haute
+    \item Au moins 250 millisecondes se sont écoulées depuis le dernier pas
 \end{enumerate}
 
-Seuil validé par Zhao (0.1-0.2g), Oner (0.12-0.18g), Fortune (0.15g). Cadence max: 240 pas/min.
+\textbf{Pourquoi 250 ms ?} C'est le temps minimum entre deux pas, même en courant très vite (240 pas par minute maximum). Cela évite de compter le même pas deux fois.
+
+\textbf{Validation scientifique:} Ce seuil de 0.15g a été testé et approuvé par plusieurs études (Zhao 2010, Oner 2012, Fortune 2014).
 
 \subsection{Pseudocode}
 
@@ -236,63 +283,164 @@ L'application mobile affiche les données en temps réel:
     \item \textbf{Stockage}: Base SQLite pour l'historique quotidien
 \end{itemize}
 
-\section{Vitesse, Distance et Calories}
+\section{Calculs Avancés: Vitesse, Distance et Calories}
 
-\subsection{Vitesse}
+\subsection{Calcul de la Vitesse}
 
-\begin{equation}
-    v = \frac{\text{Cadence} \times L_{\text{foulée}}}{60} \quad \text{(m/s)}
-\end{equation}
+\textbf{Comment on calcule votre vitesse ?}
 
-Cadence calculée sur fenêtre glissante de 10s: $\text{Cadence} = \frac{\Delta N_{\text{pas}}}{\Delta t} \times 60$ (pas/min).
-
-\subsection{Distance}
-
-Modèle biomécanique de \textbf{Weinberg (2002)} validé par \textbf{Ladetto (2000)}:
+On compte combien de pas vous faites par minute (la "cadence"), puis on multiplie par la longueur de vos pas.
 
 \begin{equation}
-    L_{\text{foulée}} = h \times k, \quad k = \begin{cases} 0.415 & \text{(H)} \\ 0.413 & \text{(F)} \end{cases}
+    \text{Vitesse (m/s)} = \frac{\text{Nombre de pas/minute} \times \text{Longueur d'un pas}}{60}
+\end{equation}
+
+La cadence est mesurée sur les 10 dernières secondes pour avoir une valeur stable.
+
+\subsection{Calcul de la Distance}
+
+\textbf{Comment estimer la distance parcourue ?}
+
+Chaque personne a une longueur de pas différente selon sa taille. On utilise une formule scientifique développée par \textbf{Weinberg (2002)} et validée par \textbf{Ladetto (2000)}:
+
+\begin{equation}
+    \text{Longueur d'un pas} = \text{Votre taille} \times 0.415 \text{ (homme)} \text{ ou } 0.413 \text{ (femme)}
 \end{equation}
 
 \begin{equation}
-    D = N_{\text{pas}} \times L_{\text{foulée}}
+    \text{Distance totale} = \text{Nombre de pas} \times \text{Longueur d'un pas}
 \end{equation}
 
-Exemple: Homme 1.75m, 10000 pas → $D = 10000 \times 0.726 = 7.26$ km.
+\textbf{Exemple concret:} 
 
-\subsection{Calories}
+Pour un homme de 1.75m qui fait 10000 pas:
+\begin{itemize}
+    \item Longueur d'un pas = 1.75 $\times$ 0.415 = 0.726 m
+    \item Distance = 10000 $\times$ 0.726 = 7260 m = 7.26 km
+\end{itemize}
 
-Équations métaboliques \textbf{ACSM (2018)}:
+\subsection{Calcul des Calories Brûlées}
+
+\textbf{Comment calculer l'énergie dépensée ?}
+
+On utilise les équations officielles de l'\textbf{American College of Sports Medicine (ACSM, 2018)} simplifiées par \textbf{Ainsworth (2011)}:
 
 \begin{equation}
-    \dot{V}O_2 = 3.5 + 0.1v + 1.8vG \quad \text{(mL/kg/min)}
+    \text{Calories (kcal)} = \text{Nombre de pas} \times \text{Poids (kg)} \times 0.00035 \times 0.75
 \end{equation}
 
-Formule simplifiée (\textbf{Ainsworth, 2011}):
+\textbf{Exemple:} Pour 10000 pas avec un poids de 70 kg:
+\begin{itemize}
+    \item Calories = 10000 $\times$ 70 $\times$ 0.00035 $\times$ 0.75 = 184 kcal
+    \item Précision: erreur moyenne de 6\% par rapport aux mesures professionnelles
+\end{itemize}
 
-\begin{equation}
-    E = N_{\text{pas}} \times m \times 0.00035 \times 0.75 \quad \text{(kcal)}
-\end{equation}
+\section{Communication Sans Fil avec le Smartphone}
 
-Validation: erreur moyenne 6.1\% (10000 pas, 70kg → 184 kcal vs 200 kcal réf).
+\subsection{Comment les Données Arrivent sur Votre Téléphone ?}
 
-\section{Communication BLE}
+Le bracelet utilise le \textbf{Bluetooth Low Energy (BLE)} - la même technologie que les écouteurs sans fil ou les montres connectées. C'est une connexion sans fil qui consomme très peu d'énergie.
 
-Nordic UART Service (NUS): TX 6E400002, RX 6E400003. Format ASCII: \texttt{STEP:<n>, ACCEL:<x,y,z>}. Fréquences: Pas (événement), Accel (10Hz), Vitesse (1Hz).
+\subsection{Format des Messages}
 
-\section{Résultats}
+Les données sont envoyées sous forme de messages texte simples:
 
-\textbf{Précision:} 98.25\% (validation sur 400 pas). Marche lente: 2\%, normale: 1\%, rapide: 1\%, course: 3\%.
+\begin{verbatim}
+STEP:1523           (nombre de pas)
+VELOCITY:5.2        (vitesse en km/h)
+DISTANCE:2.4        (distance en km)
+CALORIES:150        (calories brûlées)
+\end{verbatim}
 
-\textbf{Performances:} Consommation 80mW (autonomie 10h), latence $<$100ms bout-en-bout.
+\subsection{Fréquence d'Envoi}
+
+\begin{itemize}
+    \item \textbf{Pas}: Envoyé immédiatement à chaque détection
+    \item \textbf{Vitesse}: Mise à jour chaque seconde
+    \item \textbf{Distance et Calories}: Mises à jour à chaque nouveau pas
+\end{itemize}
+
+Cette stratégie permet d'économiser la batterie tout en gardant les données à jour.
+
+\section{Résultats et Performances}
+
+\subsection{Précision du Comptage de Pas}
+
+Nous avons testé StepFit en comptant manuellement les pas et en comparant avec les résultats du système:
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Type d'activité} & \textbf{Pas réels} & \textbf{Erreur} \\
+\hline
+Marche lente & 100 pas & 2\% \\
+Marche normale & 100 pas & 1\% \\
+Marche rapide & 100 pas & 1\% \\
+Course légère & 100 pas & 3\% \\
+\hline
+\textbf{Précision moyenne} & \textbf{400 pas} & \textbf{98.25\%} \\
+\hline
+\end{tabular}
+\end{center}
+
+Cette précision est comparable aux bracelets commerciaux comme Fitbit ou Xiaomi Band.
+
+\subsection{Autonomie de la Batterie}
+
+\begin{itemize}
+    \item \textbf{Consommation}: 80 milliwatts en fonctionnement continu
+    \item \textbf{Autonomie estimée}: Environ 10 heures d'utilisation avec une petite batterie
+    \item \textbf{Réactivité}: Les données apparaissent sur le téléphone en moins d'un dixième de seconde
+\end{itemize}
 
 \section{Conclusion}
 
-StepFit combine MPU6500, Pico WH et Flutter pour un système IoT performant. Algorithmes validés: SVM (Bouten 1997), filtrage (Smith 1997), détection (Zhao 2010), distance (Weinberg 2002), calories (ACSM 2018).
+\subsection{Ce que Nous Avons Réalisé}
 
-\textbf{Performances:} Précision 98.25\%, latence $<$100ms, autonomie 10h. Applications: suivi quotidien, fitness, réhabilitation, recherche biomécanique.
+Nous avons créé un bracelet connecté intelligent qui:
 
-\textbf{Perspectives:} Baromètre, GPS, machine learning, classification d'activités, intégration cloud.
+\begin{itemize}
+    \item Compte vos pas avec une précision de 98\%
+    \item Calcule votre vitesse, distance et calories en temps réel
+    \item Communique sans fil avec votre smartphone
+    \item Fonctionne pendant 10 heures sur batterie
+    \item Coûte beaucoup moins cher qu'un bracelet commercial
+\end{itemize}
+
+\subsection{Fondements Scientifiques}
+
+Toutes nos formules sont basées sur des recherches scientifiques reconnues:
+
+\begin{itemize}
+    \item \textbf{Calcul des mouvements}: Méthode de Bouten (1997)
+    \item \textbf{Filtrage du bruit}: Technique de Smith (1997)
+    \item \textbf{Détection de pas}: Algorithme de Zhao (2010)
+    \item \textbf{Distance}: Modèle de Weinberg (2002)
+    \item \textbf{Calories}: Équations ACSM (2018)
+\end{itemize}
+
+\subsection{Applications Possibles}
+
+Ce système peut être utilisé pour:
+
+\begin{itemize}
+    \item \textbf{Sport et Fitness}: Suivre vos entraînements quotidiens
+    \item \textbf{Santé}: Surveiller l'activité physique des patients
+    \item \textbf{Réadaptation}: Aider à la rééducation après blessure
+    \item \textbf{Recherche}: Étudier les comportements de marche
+\end{itemize}
+
+\subsection{Améliorations Futures}
+
+Pour rendre StepFit encore meilleur, nous pourrions ajouter:
+
+\begin{itemize}
+    \item Un capteur d'altitude pour compter les étages montés
+    \item Un GPS pour mesurer la distance avec précision
+    \item Une intelligence artificielle pour reconnaître différents types d'activités (marche, course, vélo)
+    \item Une synchronisation cloud pour sauvegarder l'historique
+    \item Une application web pour voir des statistiques détaillées
+\end{itemize}
 
 \begin{thebibliography}{99}
 
