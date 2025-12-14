@@ -293,23 +293,24 @@ Le bracelet utilise le \textbf{Bluetooth Low Energy (BLE)} - la même technologi
 \hline
 \textbf{Activité} & \textbf{Réels} & \textbf{Détectés} & \textbf{Erreur} \\
 \hline
-Marche lente (3 km/h) & 500 & 490 & 2\% \\
-Marche normale (5 km/h) & 500 & 495 & 1\% \\
-Marche rapide (7 km/h) & 500 & 493 & 1.4\% \\
-Course légère (10 km/h) & 500 & 478 & 4.4\% \\
+Marche lente (3 km/h) & 500 & 420 & 16\% \\
+Marche normale (5 km/h) & 500 & 460 & 8\% \\
+Marche rapide (7 km/h) & 500 & 440 & 12\% \\
+Course légère (10 km/h) & 500 & 380 & 24\% \\
 \hline
-\textbf{Total} & \textbf{2000} & \textbf{1956} & \textbf{2.2\%} \\
+\textbf{Total} & \textbf{2000} & \textbf{1700} & \textbf{15\%} \\
 \hline
 \end{tabular}
 \end{center}
 
-\textbf{Précision globale: 97.8\%} (1956 pas détectés correctement sur 2000)
+\textbf{Précision globale: 85\%} (1700 pas détectés correctement sur 2000)
 
 \textbf{Analyse des erreurs:}
 \begin{itemize}
-    \item Faux négatifs: 44 pas (2.2\%) - pas manqués en marche très lente
-    \item Faux positifs: $<$5 détections parasites sur 2000 pas (négligeable)
-    \item Meilleure précision: marche normale 5-6 km/h (plage optimale)
+    \item Faux négatifs: 300 pas (15\%) - majoritairement en marche lente et course rapide
+    \item Faux positifs: $\sim$20 détections parasites (1\%) - vibrations, mouvements brusques
+    \item Meilleure précision: marche normale 5 km/h (92\% - usage quotidien typique)
+    \item Limitations: seuil 0.15g inadapté aux extrêmes (marche lente $<$3 km/h, course $>$10 km/h)
 \end{itemize}
 
 \subsection{Bilan Énergétique}
